@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.skill binary
+*.md text diff=markdown
+*.py text diff=python
+*.sh text eol=lf
+examples/** linguist-documentation

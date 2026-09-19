@@ -6,6 +6,10 @@ A Claude Skill for Indian month-end close — GST reconciliation, TDS matching, 
 
 <sub>Claude Skill · 9 files · 1,377 lines · India / GST / Ind AS · MIT</sub>
 
+[![validate](https://github.com/JeevaNadar1/Company_Finance_buddy/actions/workflows/validate.yml/badge.svg)](https://github.com/JeevaNadar1/Company_Finance_buddy/actions/workflows/validate.yml)
+[![release](https://img.shields.io/github/v/release/JeevaNadar1/Company_Finance_buddy?sort=semver)](https://github.com/JeevaNadar1/Company_Finance_buddy/releases)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 ---
 
 ## Why this one is built differently
@@ -174,6 +178,50 @@ Settings → Capabilities → Skills → Upload, then select `company-finance-bu
 
 Triggers on its own description — closing a month, reconciling GST, chasing unmatched invoices, reviewing a trial balance, or uploading a purchase register, 2B JSON or 26AS.
 
+Or download the bundle from the [latest release](https://github.com/JeevaNadar1/Company_Finance_buddy/releases/latest).
+
+Walkthrough of a full close: [`docs/USAGE.md`](docs/USAGE.md).
+
+## Repository
+
+```
+company-finance-buddy/          skill source — read and diff here
+company-finance-buddy.skill     packaged bundle — generated, committed for one-click install
+scripts/validate.py             structural checks
+scripts/build.sh                deterministic packaging
+docs/ARCHITECTURE.md            loading model, design decisions
+docs/USAGE.md                   running a close end to end
+examples/                       synthetic fixtures + expected output
+```
+
+The bundle is a build artifact that is committed anyway, so nobody has to clone to install. CI rebuilds it on every push and fails if it has drifted from the source. Never hand-edit it.
+
+## Build from source
+
+```bash
+git clone https://github.com/JeevaNadar1/Company_Finance_buddy.git
+cd Company_Finance_buddy
+
+make validate   # frontmatter, reference resolution, line budgets
+make build      # validate, then repackage the .skill
+```
+
+Python 3 for the validator, `zip` for packaging. Nothing else.
+
+The validator enforces what breaks a skill silently: a `description` inside the trigger budget, every `references/...` path resolving on disk, `SKILL.md` under 250 lines so it stays cheap to load on every invocation, and a warning pass for hardcoded statutory dates or rates.
+
+## Try it
+
+`examples/` holds twelve synthetic purchase invoices, an eleven-entry 2B extract, a 26AS extract and a bank statement — engineered so that one invoice exercises each of the six matching tiers, plus a duplicate payment, a vendor-name variant and a cross-period credit.
+
+[`examples/expected-output.md`](examples/expected-output.md) is what a correct run produces, including the five ways a run can be plausibly wrong.
+
+## Contributing
+
+[`CONTRIBUTING.md`](CONTRIBUTING.md). The short version: any change to matching must state its confidence band and its false-positive cost, and a higher match rate bought by auto-applying weak evidence is a regression.
+
+Do not put client data in an issue. [`SECURITY.md`](SECURITY.md) covers data handling.
+
 ## Limitations
 
 **India-specific.** GST, TDS, 26AS, Ind AS. Not adapted for US GAAP or UK VAT.
@@ -188,4 +236,4 @@ Triggers on its own description — closing a month, reconciling GST, chasing un
 
 ## License
 
-MIT
+MIT — see [`LICENSE`](LICENSE).

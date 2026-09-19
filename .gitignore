@@ -1,0 +1,35 @@
+# Build output
+dist/
+build/
+*.skill.tmp
+
+# Real client data must never enter this repository.
+# Only synthetic fixtures under examples/ are permitted.
+*.xlsx
+*.xls
+*.csv
+*.json
+!examples/**/*.csv
+!examples/**/*.json
+!.github/**/*.json
+*2b*.json
+*26as*
+*gstr*
+*ledger*
+*trial-balance*
+*bank-statement*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
